@@ -24,12 +24,15 @@ import (
 type message struct {
 	recipient string
 	body      string
+	sent      bool
+	log       string
 }
 
 type sessionData struct {
 	conn       *whatsapp.Conn
-	Logs       []string `json:"logs"`
 	Processing bool     `json:"processing"`
+	Success    []string `json:"success,omitempty"`
+	Failures   []string `json:"failures,omitempty"`
 }
 
 type service struct {
@@ -196,10 +199,14 @@ func (svc service) send(ctx *fiber.Ctx) error {
 	}
 
 	// Goroutine to get logs from Send operations and set them in session data
-	logChan := make(chan string)
+	logChan := make(chan message)
 	go func() {
-		for v := range logChan {
-			data.Logs = append(data.Logs, v)
+		for m := range logChan {
+			if m.sent {
+				data.Success = append(data.Success, m.log)
+			} else {
+				data.Failures = append(data.Failures, m.log)
+			}
 			svc.sessions[sess.ID()] = data
 		}
 	}()
@@ -234,13 +241,15 @@ func (svc service) send(ctx *fiber.Ctx) error {
 						Info: whatsapp.MessageInfo{RemoteJid: fmt.Sprintf("%s@s.whatsapp.net", msg.recipient)},
 						Text: msg.body,
 					})
+					if err != nil {
+						msg.log = fmt.Sprintf("Could not send message to %s: %s", msg.recipient, err)
+					} else {
+						msg.log = fmt.Sprintf("Message sent to %s", msg.recipient)
+						msg.sent = true
+					}
 
 					// Send logs to channel
-					if err != nil {
-						logChan <- fmt.Sprintf("Could not send message to %s: %s", msg.recipient, err)
-					} else {
-						logChan <- fmt.Sprintf("Message sent to %s", msg.recipient)
-					}
+					logChan <- msg
 
 					// Reduce delta by 1
 					wg.Done()
