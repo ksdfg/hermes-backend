@@ -222,8 +222,6 @@ func (svc service) send(ctx *fiber.Ctx) error {
 
 		// Iterate over all messages in batches
 		for i := 0; i < len(messages); i += svc.config.Concurrency {
-			time.Sleep(5 * time.Second)
-
 			// Calculate end index for splice
 			j := i + svc.config.Concurrency
 			if j > len(messages) {

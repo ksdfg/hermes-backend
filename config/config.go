@@ -71,7 +71,6 @@ func Init() {
 	}
 
 	// Make sure all the config variables are set
-	log.Printf("%+v\n", cfg)
 	if cfg.VersionMajor == -1 || cfg.VersionMinor == -1 || cfg.VersionPatch == -1 {
 		log.Fatal("whatsapp version configuration not set in env")
 	}
