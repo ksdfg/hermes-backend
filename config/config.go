@@ -22,6 +22,9 @@ type Config struct {
 
 	// Peak Concurrency
 	Concurrency int `mapstructure:"CONCURRENCY"`
+
+	// Origins Allowed by CORS
+	AllowOrigins string `mapstructure:"ALLOW_ORIGINS"`
 }
 
 // Unexported variable to implement singleton pattern
@@ -45,6 +48,7 @@ func Init() {
 	viper.SetDefault("CLIENT_VERSION", "")
 	viper.SetDefault("QR_SIZE", -1)
 	viper.SetDefault("CONCURRENCY", -1)
+	viper.SetDefault("ALLOW_ORIGINS", "")
 
 	// Automatically override values in config file with those in environment
 	viper.AutomaticEnv()
@@ -67,6 +71,7 @@ func Init() {
 	}
 
 	// Make sure all the config variables are set
+	log.Printf("%+v\n", cfg)
 	if cfg.VersionMajor == -1 || cfg.VersionMinor == -1 || cfg.VersionPatch == -1 {
 		log.Fatal("whatsapp version configuration not set in env")
 	}
@@ -78,6 +83,9 @@ func Init() {
 	}
 	if cfg.Concurrency == -1 {
 		log.Fatal("peak concurrency not set in env")
+	}
+	if cfg.AllowOrigins == "" {
+		log.Fatal("origins allowed by CORS not set in env")
 	}
 }
 

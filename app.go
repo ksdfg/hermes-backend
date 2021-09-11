@@ -28,6 +28,9 @@ var (
 )
 
 func main() {
+	// Fetch config vars
+	cfg := config.Get()
+
 	// Parse command-line flags
 	flag.Parse()
 
@@ -39,7 +42,7 @@ func main() {
 	// Middleware
 	app.Use(recover.New())
 	app.Use(logger.New())
-	app.Use(cors.New())
+	app.Use(cors.New(cors.Config{AllowOrigins: cfg.AllowOrigins, AllowCredentials: true}))
 	app.Use(compress.New())
 
 	// Register handlers
