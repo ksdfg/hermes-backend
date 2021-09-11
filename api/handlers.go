@@ -124,7 +124,7 @@ func (svc service) loggedIn(ctx *fiber.Ctx) error {
 		return errors.New("data not set in session")
 	}
 
-	return ctx.JSON(data.conn.GetLoggedIn())
+	return ctx.JSON(map[string]bool{"loggedIn": data.conn.GetLoggedIn()})
 }
 
 // send accepts a message body template and a CSV with the phone number and fields to replace
