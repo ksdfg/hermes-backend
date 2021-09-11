@@ -1,10 +1,11 @@
 ![Hermes](img/logo.png)
 
-Web API for sending WhatsApp messages to multiple people at once.
+Web API for WhatsApp messaging automation.
 
 Built with [Fiber](https://github.com/gofiber/fiber) and [go-whatsapp](https://github.com/Rhymen/go-whatsapp), this is a
 small web API that allows a user to automate sending a message to multiple people (whether they are or aren't in your
-contacts list) with your number.
+contacts list) with your number. You can also use placeholders in the message body that will be replaced with values
+from the CSV file.
 
 This application is meant primarily for event management - to contact people who have signed up for events for relaying
 information and reminders. I cannot condone any usage of this application outside this usecase.
@@ -27,6 +28,7 @@ environment will overwrite the one in the `.env`.
 | CLIENT_VERSION | Version of the application |
 | QR_SIZE | Number of pixels each side of the QR code should be |
 | CONCURRENCY | Peak concurrency while sending messages |
+| ALLOW_ORIGINS | Origins to be allowed by CORS |
 
 ## Start the application
 
