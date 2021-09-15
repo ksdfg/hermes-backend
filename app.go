@@ -42,7 +42,7 @@ func main() {
 	// Middleware
 	app.Use(recover.New())
 	app.Use(logger.New())
-	app.Use(cors.New(cors.Config{AllowOrigins: cfg.AllowOrigins, AllowCredentials: true}))
+	app.Use(cors.New(cors.Config{AllowOrigins: cfg.AllowOrigins}))
 	app.Use(compress.New())
 
 	// Register handlers
