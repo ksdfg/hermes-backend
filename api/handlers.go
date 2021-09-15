@@ -18,7 +18,7 @@ import (
 	"github.com/boombuler/barcode"
 	"github.com/boombuler/barcode/qr"
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/session"
+	"github.com/google/uuid"
 )
 
 type message struct {
@@ -36,9 +36,8 @@ type sessionData struct {
 }
 
 type service struct {
-	config   *config.Config
-	store    *session.Store
-	sessions map[string]sessionData
+	config  *config.Config
+	session map[uuid.UUID]sessionData
 }
 
 // new will start a fresh session
@@ -56,24 +55,18 @@ func (svc service) new(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	// Create new session
-	sess, err := svc.store.Get(ctx)
+	// Create new session ID
+	id, err := uuid.NewUUID()
 	if err != nil {
-		return err
-	}
-	err = sess.Regenerate()
-	if err != nil {
+		log.Println(err)
 		return err
 	}
 
-	// Set connection and list of messages in service sessions map
-	svc.sessions[sess.ID()] = sessionData{conn: conn}
+	// Set connection and list of messages in service session map
+	svc.session[id] = sessionData{conn: conn}
 
-	// Save session
-	err = sess.Save()
-	if err != nil {
-		return err
-	}
+	// Set session ID in context headers
+	ctx.Set("session", id.String())
 
 	// Get auth code for login
 	qrChan := make(chan string)
@@ -112,14 +105,19 @@ func (svc service) new(ctx *fiber.Ctx) error {
 
 // loggedIn will return true if the user in the session is logged in, else false
 func (svc service) loggedIn(ctx *fiber.Ctx) error {
-	// Get session for request context
-	sess, err := svc.store.Get(ctx)
+	// Get session ID from request context
+	idStr := ctx.Get("session")
+	if idStr == "" {
+		return errors.New("session ID not passed")
+	}
+	id, err := uuid.Parse(idStr)
 	if err != nil {
+		log.Println(err)
 		return err
 	}
 
-	// Get data from service sessions map
-	data, ok := svc.sessions[sess.ID()]
+	// Get data from service session map
+	data, ok := svc.session[id]
 	if !ok {
 		return errors.New("data not set in session")
 	}
@@ -129,14 +127,19 @@ func (svc service) loggedIn(ctx *fiber.Ctx) error {
 
 // send accepts a message body template and a CSV with the phone number and fields to replace
 func (svc service) send(ctx *fiber.Ctx) error {
-	// Get session for request context
-	sess, err := svc.store.Get(ctx)
+	// Get session ID from request context
+	idStr := ctx.Get("session")
+	if idStr == "" {
+		return errors.New("session ID not passed")
+	}
+	id, err := uuid.Parse(idStr)
 	if err != nil {
+		log.Println(err)
 		return err
 	}
 
-	// Get data from service sessions map
-	data, ok := svc.sessions[sess.ID()]
+	// Get data from service session map
+	data, ok := svc.session[id]
 	if !ok {
 		return errors.New("data not set in session")
 	}
@@ -207,7 +210,7 @@ func (svc service) send(ctx *fiber.Ctx) error {
 			} else {
 				data.Failures = append(data.Failures, m.log)
 			}
-			svc.sessions[sess.ID()] = data
+			svc.session[id] = data
 		}
 	}()
 
@@ -215,7 +218,7 @@ func (svc service) send(ctx *fiber.Ctx) error {
 	go func() {
 		// Set processing flag as true
 		data.Processing = true
-		svc.sessions[sess.ID()] = data
+		svc.session[id] = data
 
 		// Declare wait group to handle execution of batched goroutines
 		var wg sync.WaitGroup
@@ -275,7 +278,7 @@ func (svc service) send(ctx *fiber.Ctx) error {
 
 		// Set processing flag as false
 		data.Processing = false
-		svc.sessions[sess.ID()] = data
+		svc.session[id] = data
 	}()
 
 	return ctx.SendStatus(200)
@@ -283,14 +286,19 @@ func (svc service) send(ctx *fiber.Ctx) error {
 
 // logs will return all the logs for the send operation triggered for the session
 func (svc service) logs(ctx *fiber.Ctx) error {
-	// Get session for request context
-	sess, err := svc.store.Get(ctx)
+	// Get session ID from request context
+	idStr := ctx.Get("session")
+	if idStr == "" {
+		return errors.New("session ID not passed")
+	}
+	id, err := uuid.Parse(idStr)
 	if err != nil {
+		log.Println(err)
 		return err
 	}
 
-	// Get data from service sessions map
-	data, ok := svc.sessions[sess.ID()]
+	// Get data from service session map
+	data, ok := svc.session[id]
 	if !ok {
 		return errors.New("data not set in session")
 	}

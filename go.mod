@@ -6,6 +6,7 @@ require (
 	github.com/Rhymen/go-whatsapp v0.1.1
 	github.com/boombuler/barcode v1.0.1
 	github.com/gofiber/fiber/v2 v2.18.0
+	github.com/google/uuid v1.1.2
 	github.com/spf13/viper v1.8.1
 )
 
