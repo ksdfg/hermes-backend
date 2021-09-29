@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"image/png"
 	"log"
+	"net/http"
 	"strings"
 	"sync"
 	"time"
@@ -281,7 +282,7 @@ func (svc service) send(ctx *fiber.Ctx) error {
 		svc.session[id] = data
 	}()
 
-	return ctx.SendStatus(200)
+	return ctx.SendStatus(http.StatusOK)
 }
 
 // logs will return all the logs for the send operation triggered for the session
@@ -304,4 +305,22 @@ func (svc service) logs(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.JSON(data)
+}
+
+func (svc service) cleanup(ctx *fiber.Ctx) error {
+	// Get session ID from request context
+	idStr := ctx.Get("session")
+	if idStr == "" {
+		return errors.New("session ID not passed")
+	}
+	id, err := uuid.Parse(idStr)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+
+	// Delete session data
+	delete(svc.session, id)
+
+	return ctx.SendStatus(http.StatusOK)
 }

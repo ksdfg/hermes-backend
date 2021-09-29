@@ -17,9 +17,13 @@ func Register(router fiber.Router) {
 	// Create new service object
 	svc := service{session: sessions, config: cfg}
 
-	// Add handler at route
+	// Add handlers at routes
+
 	router.Post("/", svc.new)
-	router.Get("/loggedIn", svc.loggedIn)
 	router.Post("/send", svc.send)
+
+	router.Get("/loggedIn", svc.loggedIn)
 	router.Get("/logs", svc.logs)
+
+	router.Delete("/", svc.cleanup)
 }
