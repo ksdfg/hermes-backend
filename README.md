@@ -1,5 +1,9 @@
 ![Hermes](img/logo.png)
 
+[![Linter](https://github.com/ksdfg/hermes-backend/actions/workflows/linter.yml/badge.svg?branch=master)](https://github.com/ksdfg/hermes-backend/actions/workflows/linter.yml)
+[![Security](https://github.com/ksdfg/hermes-backend/actions/workflows/security.yml/badge.svg?branch=master)](https://github.com/ksdfg/hermes-backend/actions/workflows/security.yml)
+[![Deploy to Heroku](https://github.com/ksdfg/hermes-backend/actions/workflows/deploy.yml/badge.svg?branch=master)](https://github.com/ksdfg/hermes-backend/actions/workflows/deploy.yml)
+
 Web API for WhatsApp messaging automation.
 
 Built with [Fiber](https://github.com/gofiber/fiber) and [go-whatsapp](https://github.com/Rhymen/go-whatsapp), this is a
