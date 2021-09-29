@@ -25,8 +25,4 @@ COPY --from=build /go/src/hermes/app .
 # Exposes port 3000 because our program listens on that port
 EXPOSE 3000
 
-# Set fake entrypoint to make sure fiber doesn't get PID 1
-RUN apk add dumb-init
-ENTRYPOINT ["/usr/bin/dumb-init", "--"]
-
-CMD ["./app", "--prod"]
+CMD ["./app"]
