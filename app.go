@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 
 	"hermes/api"
@@ -23,7 +24,6 @@ func init() {
 }
 
 var (
-	port = flag.String("port", ":3000", "Port to listen on")
 	prod = flag.Bool("prod", false, "Enable prefork in Production")
 )
 
@@ -49,5 +49,5 @@ func main() {
 	api.Register(app)
 
 	// Listen on port 3000
-	log.Fatal(app.Listen(*port)) // go run app.go -port=:3000
+	log.Fatal(app.Listen(fmt.Sprintf(":%d", cfg.Port))) // go run app.go -port=:3000
 }

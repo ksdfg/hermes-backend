@@ -25,6 +25,9 @@ type Config struct {
 
 	// Origins Allowed by CORS
 	AllowOrigins string `mapstructure:"ALLOW_ORIGINS"`
+
+	// Port to listen to
+	Port int `mapstructure:"PORT"`
 }
 
 // Unexported variable to implement singleton pattern
@@ -49,6 +52,7 @@ func Init() {
 	viper.SetDefault("QR_SIZE", -1)
 	viper.SetDefault("CONCURRENCY", -1)
 	viper.SetDefault("ALLOW_ORIGINS", "")
+	viper.SetDefault("PORT", 3000)
 
 	// Automatically override values in config file with those in environment
 	viper.AutomaticEnv()
