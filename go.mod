@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/Rhymen/go-whatsapp v0.1.1
 	github.com/boombuler/barcode v1.0.1
-	github.com/gofiber/fiber/v2 v2.18.0
+	github.com/gofiber/fiber/v2 v2.20.1
 	github.com/google/uuid v1.3.0
 	github.com/spf13/viper v1.9.0
 )
