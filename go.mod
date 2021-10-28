@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/Rhymen/go-whatsapp v0.1.1
 	github.com/boombuler/barcode v1.0.1
-	github.com/gofiber/fiber/v2 v2.18.0
+	github.com/gofiber/fiber/v2 v2.21.0
 	github.com/google/uuid v1.3.0
 	github.com/spf13/viper v1.9.0
 )
@@ -27,7 +27,7 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/subosito/gotenv v1.2.0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
-	github.com/valyala/fasthttp v1.29.0 // indirect
+	github.com/valyala/fasthttp v1.31.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5 // indirect
 	golang.org/x/sys v0.0.0-20210823070655-63515b42dcdf // indirect
